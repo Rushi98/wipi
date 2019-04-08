@@ -162,4 +162,9 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             print("Scanning stopped")
 
     def _save_info(self, info):
-        pass
+        query = """INSERT OR IGNORE INTO STUDENT_INFO VALUES ((SELECT mac_address from IP_MAC WHERE ip_address==?), ?, ?);"""
+        val = (info["ip"], info["studentName"], info["studentId"])
+        try:
+            self.cursor.execute(query, val)
+        except Exception as e:
+            raise e
