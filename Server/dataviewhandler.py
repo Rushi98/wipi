@@ -5,7 +5,6 @@ from signal import SIGKILL
 from urllib.parse import unquote
 
 SCANNING_EXEC = "executor.sh"
-SCANNING_DIR = "../Scanning"
 
 
 class DataViewHandler(socketserver.BaseRequestHandler):
@@ -151,7 +150,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             self.scanning = True
         else:
             # child
-            subprocess.run([SCANNING_EXEC], cwd=SCANNING_DIR)
+            subprocess.run([SCANNING_EXEC])
             print("Scanning started")
         pass
 
