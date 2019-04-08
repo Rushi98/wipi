@@ -1,6 +1,5 @@
 import socketserver
-import mysql.connector
-import sys
+from urllib.parse import unquote
 
 class DataViewHandler(socketserver.BaseRequestHandler):
     """
@@ -17,6 +16,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         if verb == 'GET':
             url = first_line_tokens[1]
             url = url.lower()
+            url = unquote(url)
+            print(url)
             url_tokens = url.split('/')[1:]
             print(url_tokens)
             if url_tokens[0] == 'sessions':
@@ -36,47 +37,47 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         else:
             print("unknown verb, ignoring request {}", data)
             return
-        self.request.sendall(self.response.encode())
+        self.request.sendall(str(self.response).encode())
 
     def _get_sessions(self):
         query = """select distinct session from ATTENDANCE_DATA order by session;"""
         try:
-            cursor.execute(query)
-            rows = cursor.fetchall()
-        else:
-            return rows
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
         except Exception as e:
             raise e
+        else:
+            return rows
 
     def _get_session_attendance(self, datetime):
-        query = """select session, bits_id, name from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
+        query = """select session, bits_id, name, hits from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
                     AD.session==? and AD.mac_address==SI.mac_address) as t1 order by bits_id;"""
         try:
-            cursor.execute(query, (datetime))
-            rows = cursor.fetchall()
-        else:
-            return rows
+            self.cursor.execute(query, (datetime,))
+            rows = self.cursor.fetchall()
         except Exception as e:
             raise e
+        else:
+            return rows
 
     def _get_people(self):
-        query = """select bits_id, name from STUDENT_INFO order by bits_id;"""
+        query = """select bits_id, name, mac_address from STUDENT_INFO order by bits_id;"""
         try:
-            cursor.execute(query)
-            rows = cursor.fetchall()
-        else:
-            return rows
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
         except Exception as e:
             raise e
+        else:
+            return rows
 
 
 
     def _get_person_attendance(self, mac):
-        query = """select session from ATTENDANCE_DATA where mac_address==?;"""
+        query = """select session, hits from ATTENDANCE_DATA where mac_address==?;"""
         try:
-            cursor.execute(query, (mac))
-            rows = cursor.fetchall()
-        else:
-            return rows
+            self.cursor.execute(query, (mac,))
+            rows = self.cursor.fetchall()
         except Exception as e:
             raise e
+        else:
+            return rows
