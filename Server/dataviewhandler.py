@@ -1,4 +1,5 @@
 import socketserver
+import subprocess
 from urllib.parse import unquote
 
 class DataViewHandler(socketserver.BaseRequestHandler):
@@ -22,22 +23,30 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             print(url_tokens)
             if url_tokens[0] == 'sessions':
                 if len(url_tokens) == 1:
-                    self.response = self._get_sessions()
+                    response = self._get_sessions()
                 else:
                     datetime = url_tokens[1]
-                    self.response = self._get_session_attendance(datetime)
+                    response = self._get_session_attendance(datetime)
             elif url_tokens[0] == 'people':
-                self.response = self._get_people()
+                response = self._get_people()
             elif url_tokens[0] == 'person' and len(url_tokens) > 1:
                 mac = url_tokens[1]
-                self.response = self._get_person_attendance(mac)
+                response = self._get_person_attendance(mac)
+            elif url_tokens[0] == 'startMap':
+                self._start_map()
+            elif url_tokens[0] == 'stopMap':
+                self._stop_map()
+            elif url_tokens[0] == 'startScan':
+                self._start_scan()
+            elif url_tokens[0] == 'stopScan':
+                self._stop_scan()
             else:
                 print("unknown path, ignoring request {}", data)
                 return
         else:
             print("unknown verb, ignoring request {}", data)
             return
-        self.request.sendall(str(self.response).encode())
+        self.request.sendall(str(response).encode())
 
     def _get_sessions(self):
         query = """select distinct session from ATTENDANCE_DATA order by session;"""
@@ -70,8 +79,6 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         else:
             return rows
 
-
-
     def _get_person_attendance(self, mac):
         query = """select session, hits from ATTENDANCE_DATA where mac_address==?;"""
         try:
@@ -81,3 +88,15 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             raise e
         else:
             return rows
+
+    def _start_map(self):
+        pass
+
+    def _stop_map(self):
+        pass
+
+    def _start_scan(self):
+        pass
+
+    def _stop_scan(self):
+        pass
