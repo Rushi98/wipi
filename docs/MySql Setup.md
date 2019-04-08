@@ -1,0 +1,1 @@
+https://dev.mysql.com/doc/mysql-getting-started/en/
