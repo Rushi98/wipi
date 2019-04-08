@@ -1,27 +1,12 @@
 import socketserver
-import subprocess
-import os
-from signal import SIGKILL
 from urllib.parse import unquote
-
-SCANNING_EXEC = "executor.sh"
+from main import indexPage, cursor, mapping, start_scan, stop_scan
 
 
 class DataViewHandler(socketserver.BaseRequestHandler):
     """
     The RequestHandler class for our server.
     """
-    cursor = None
-
-    mapping = False
-
-    map_pid = -1
-
-    scanning = False
-
-    scan_pid = -1
-
-    indexPage = ""
 
     def handle(self):
         data = self.request.recv(1024).strip()
@@ -53,10 +38,10 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             elif url_tokens[0] == 'stopmap':
                 self._stop_map()
             elif url_tokens[0] == 'startscan':
-                self._start_scan()
+                start_scan()
             elif url_tokens[0] == 'stopscan':
-                self._stop_scan()
-            elif self.mapping:
+                stop_scan()
+            elif mapping:
                 get_values = {}
                 url_tokens = url.split('?')[1:]
                 if len(url_tokens) > 0:
@@ -78,8 +63,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                     self._save_info(info)
                     response = "Success"
                 else:
-                    response = self.indexPage
-
+                    response = indexPage
             else:
                 print("unknown path, ignoring request {}", data)
                 return
@@ -91,8 +75,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
     def _get_sessions(self):
         query = """select distinct session from ATTENDANCE_DATA order by session;"""
         try:
-            self.cursor.execute(query)
-            rows = self.cursor.fetchall()
+            cursor.execute(query)
+            rows = cursor.fetchall()
         except Exception as e:
             raise e
         else:
@@ -102,8 +86,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         query = """select session, bits_id, name, hits from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
                     AD.session==? and AD.mac_address==SI.mac_address) as t1 order by bits_id;"""
         try:
-            self.cursor.execute(query, (datetime,))
-            rows = self.cursor.fetchall()
+            cursor.execute(query, (datetime,))
+            rows = cursor.fetchall()
         except Exception as e:
             raise e
         else:
@@ -112,8 +96,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
     def _get_people(self):
         query = """select bits_id, name, mac_address from STUDENT_INFO order by bits_id;"""
         try:
-            self.cursor.execute(query)
-            rows = self.cursor.fetchall()
+            cursor.execute(query)
+            rows = cursor.fetchall()
         except Exception as e:
             raise e
         else:
@@ -122,8 +106,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
     def _get_person_attendance(self, mac):
         query = """select session, hits from ATTENDANCE_DATA where mac_address==?;"""
         try:
-            self.cursor.execute(query, (mac,))
-            rows = self.cursor.fetchall()
+            cursor.execute(query, (mac,))
+            rows = cursor.fetchall()
         except Exception as e:
             raise e
         else:
@@ -138,28 +122,6 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         self.mapping = False
         print("Mapping stopped")
         pass
-
-    def _start_scan(self):
-        if self.scanning:
-            pass
-        n = os.fork()
-        if n > 0:
-            # parent
-            # n = child's pid
-            self.scan_pid = n
-            self.scanning = True
-        else:
-            # child
-            subprocess.run([SCANNING_EXEC])
-            print("Scanning started")
-        pass
-
-    def _stop_scan(self):
-        if self.scanning:
-            os.kill(self.scan_pid, SIGKILL)
-            self.scanning = False
-            self.scan_pid = -1
-            print("Scanning stopped")
 
     def _save_info(self, info):
         query = """INSERT OR IGNORE INTO STUDENT_INFO VALUES ((SELECT mac_address from IP_MAC WHERE ip_address==?), ?, ?);"""
