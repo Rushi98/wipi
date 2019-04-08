@@ -131,17 +131,11 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             return rows
 
     def _start_map(self):
-        if self.mapping:
-            pass
-        n = os.fork()
-        if n > 0:
-            # parent
-            self.map_pid = n
-        else:
-            subprocess.run([""])
+        self.mapping = True
         pass
 
     def _stop_map(self):
+        self.mapping = False
         pass
 
     def _start_scan(self):
@@ -166,5 +160,5 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             self.scan_pid = -1
             print("Scanning stopped")
 
-    def _save_info(self):
+    def _save_info(self, info):
         pass
