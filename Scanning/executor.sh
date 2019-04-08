@@ -4,7 +4,10 @@
 # 3) delete the packets.pcap file
 # 4) go to step 1)
 
-root_pwd="rpi_pwd"
+root_pwd="alarm"
+
+session_start=`date "+%Y-%m-%d %H:%M:%S"`
+echo $session_start > session_start_time.txt
 
 for i in {1..50} 
 do
