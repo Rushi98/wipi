@@ -1,12 +1,26 @@
 import socketserver
 import subprocess
+import os
+from signal import SIGKILL
 from urllib.parse import unquote
+
+SCANNING_EXEC = "executor.sh"
+SCANNING_DIR = "../Scanning"
+
 
 class DataViewHandler(socketserver.BaseRequestHandler):
     """
     The RequestHandler class for our server.
     """
     cursor = None
+
+    mapping = False
+
+    map_pid = -1
+
+    scanning = False
+
+    scan_pid = -1
 
     def handle(self):
         data = self.request.recv(1024).strip()
@@ -91,13 +105,37 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             return rows
 
     def _start_map(self):
+        if self.mapping:
+            pass
+        n = os.fork()
+        if n > 0:
+            # parent
+            self.map_pid = n
+        else:
+            subprocess.run([""])
         pass
 
     def _stop_map(self):
         pass
 
     def _start_scan(self):
+        if self.scanning:
+            pass
+        n = os.fork()
+        if n > 0:
+            # parent
+            # n = child's pid
+            self.scan_pid = n
+            self.scanning = True
+        else:
+            # child
+            subprocess.run([SCANNING_EXEC], cwd=SCANNING_DIR)
+            print("Scanning started")
         pass
 
     def _stop_scan(self):
-        pass
+        if self.scanning:
+            os.kill(self.scan_pid, SIGKILL)
+            self.scanning = False
+            self.scan_pid = -1
+            print("Scanning stopped")
