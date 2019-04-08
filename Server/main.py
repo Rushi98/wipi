@@ -4,7 +4,7 @@ import dataviewhandler
 import sqlite3
 
 PORT = 80
-DB_NAME = 'wipi.db'
+DB_NAME = 'rpi.db'
 
 connection = sqlite3.connect(DB_NAME)
 cursor = connection.cursor()

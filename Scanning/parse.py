@@ -1,42 +1,37 @@
 # parses through the info.txt file, extracts (timestamp, ip address, mac address) and updates the MySql database
 
-import mysql.connector
+import sqlite3
+import sys
 
-DB_NAME = "DEVICES"
-query = "INSERT IGNORE INTO SCAN_DATA (ts, ip_address, mac_address, device_manufacturer) VALUES (%s, %s, %s, %s)"
+DB_NAME = "rpi.db"
+query = "INSERT OR IGNORE INTO SCAN_DATA VALUES (?, ?, ?, ?)"
 
 # get month number from month name
 monthNumber = {
-	"Jan": 1,
-	"Feb": 2,
-	"Mar": 3,
-	"Apr": 4,
-	"May": 5,
-	"Jun": 6,
-	"Jul": 7,
-	"Aug": 8,
-	"Sep": 9,
-	"Oct": 10,
-	"Nov": 11,
-	"Dec": 12
+	"Jan": "01",
+	"Feb": "02",
+	"Mar": "03",
+	"Apr": "04",
+	"May": "05",
+	"Jun": "06",
+	"Jul": "07",
+	"Aug": "08",
+	"Sep": "09",
+	"Oct": "10",
+	"Nov": "11",
+	"Dec": "12"
 }
 
 if __name__ == '__main__':
 
 	# attempt connection to the database
 	try:
-		mydb = mysql.connector.connect(
-	    host="localhost",
-	    user="root",
-	    passwd="qwerty",
-	    database=DB_NAME,
-	    auth_plugin="mysql_native_password")
-		
+		connection = sqlite3.connect(DB_NAME)
 	except Exception as e:
 		raise e
-		print "cannot connect to mysql server"
-		return -1;
-
+		print("cannot connect to SQLite")
+		sys.exit()
+	 
 	
 	fp = open("info.txt", "r")
 	for line in fp:
@@ -50,7 +45,7 @@ if __name__ == '__main__':
 		ts = ""
 		ts += (var[2] + '-')
 		if (var[0] not in monthNumber):
-			print "invalid month"
+			print("invalid month")
 			continue
 
 		ts += (monthNumber[var[0]] + '-')
@@ -59,8 +54,8 @@ if __name__ == '__main__':
 
 		device_manufacturer = (var[9].split('_'))[0]
 
-		myCursor = mydb.cursor()
+		cursor = connection.cursor()
 
 		val = (ts, var[5], var[8], device_manufacturer)
-		myCursor.execute(query, val)
-		mydb.commit()
+		cursor.execute(query, val)
+		connection.commit()

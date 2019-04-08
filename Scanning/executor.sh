@@ -22,7 +22,8 @@ do
 	sudo kill -2 $pid
 
 	# analyze the captured packets using tshark
-	tshark -r packets.pcap -Y "arp.opcode==2 && arp contains ac:2b:6e:22:e4:c6 && arp.src.proto_ipv4!=10.42.0.1" -T fields -E separator=" " -e frame.time -e _ws.col.Info -e _ws.col.Source > info.txt
+	tshark -r packets.pcap -Y "arp.opcode==2 && arp contains ac:2b:6e:22:e4:c6 && arp.src.proto_ipv4!=10.42.0.1"\
+	 -T fields -E separator=" " -e frame.time -e _ws.col.Info -e _ws.col.Source > info.txt
 	
 	# use the filtered packets to update the database
 	python parse.py

@@ -4,7 +4,7 @@
 1. Raspberry Pi 3 Model B
 
 ## Software Requirements
-1. MySql Database System
+1. SQLite Database System
 2. tshark Packet Analyzer
 3. python 
 
