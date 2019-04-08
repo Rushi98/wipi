@@ -4,7 +4,8 @@ import sqlite3
 
 DB_NAME = "rpi.db"
 search_query = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
-insert_query = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
+insert_attendance_query = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
+insert_ip_mac_query = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"
 update_query = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==?"
 
 # get start time of the session
@@ -61,6 +62,12 @@ if __name__ == '__main__':
             continue
 
         macs[var[8]] = 1
+
+        # add the ip_mac entry to database
+        ip_mac_val = (var[5], var[8])
+        cursor.execute(insert_ip_mac_query, ip_mac_val)
+        connection.commit()
+
         # get date and time in sql compatible format
         # var[1] = var[1][:(len(var[1])-1)]
         # if (len(var[1]) == 1):
@@ -80,7 +87,7 @@ if __name__ == '__main__':
 
         # val = (ts, var[5], var[8], device_manufacturer)
 
-        val = (start_time, var[8], "1")
+        attendance_val = (start_time, var[8], "1")
 
-        cursor.execute(insert_query, val)
+        cursor.execute(insert_attendance_query, attendance_val)
         connection.commit()
