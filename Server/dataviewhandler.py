@@ -1,5 +1,6 @@
 import socketserver
-
+import mysql.connector
+import sys
 
 class DataViewHandler(socketserver.BaseRequestHandler):
     """
@@ -38,13 +39,44 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         self.request.sendall(self.response.encode())
 
     def _get_sessions(self):
-        return "not yet implemented"
+        query = """select distinct session from ATTENDANCE_DATA order by session;"""
+        try:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+        else:
+            return rows
+        except Exception as e:
+            raise e
 
     def _get_session_attendance(self, datetime):
-        return "not yet implemented"
+        query = """select session, bits_id, name from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
+                    AD.session==? and AD.mac_address==SI.mac_address) as t1 order by bits_id;"""
+        try:
+            cursor.execute(query, (datetime))
+            rows = cursor.fetchall()
+        else:
+            return rows
+        except Exception as e:
+            raise e
 
     def _get_people(self):
-        return "not yet implemented"
+        query = """select bits_id, name from STUDENT_INFO order by bits_id;"""
+        try:
+            cursor.execute(query)
+            rows = cursor.fetchall()
+        else:
+            return rows
+        except Exception as e:
+            raise e
+
+
 
     def _get_person_attendance(self, mac):
-        return "not yet implemented"
+        query = """select session from ATTENDANCE_DATA where mac_address==?;"""
+        try:
+            cursor.execute(query, (mac))
+            rows = cursor.fetchall()
+        else:
+            return rows
+        except Exception as e:
+            raise e
