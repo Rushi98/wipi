@@ -21,6 +21,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             print(url)
             url_tokens = url.split('/')[1:]
             print(url_tokens)
+            response = ""
             if url_tokens[0] == 'sessions':
                 if len(url_tokens) == 1:
                     response = self._get_sessions()
@@ -32,13 +33,13 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             elif url_tokens[0] == 'person' and len(url_tokens) > 1:
                 mac = url_tokens[1]
                 response = self._get_person_attendance(mac)
-            elif url_tokens[0] == 'startMap':
+            elif url_tokens[0] == 'startmap':
                 self._start_map()
-            elif url_tokens[0] == 'stopMap':
+            elif url_tokens[0] == 'stopmap':
                 self._stop_map()
-            elif url_tokens[0] == 'startScan':
+            elif url_tokens[0] == 'startscan':
                 self._start_scan()
-            elif url_tokens[0] == 'stopScan':
+            elif url_tokens[0] == 'stopscan':
                 self._stop_scan()
             else:
                 print("unknown path, ignoring request {}", data)
