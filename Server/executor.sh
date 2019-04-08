@@ -8,8 +8,8 @@
 root_pwd="alarm"
 
 session_start=`date "+%Y-%m-%d %H:%M:%S"`
-echo $session_start > session_start_time.txt
-PARSE_PY_PATH=/home/alarm/wipi-master/Scanning/parse.py
+echo ${session_start} > session_start_time.txt
+PARSE_PY_PATH=/home/alarm/wipi-master/parse.py
 WIRELESS_INTERFACE=wlan0
 SELF_IP=192.168.12.1
 
@@ -34,7 +34,7 @@ do
 	 -T fields -E separator=" " -e frame.time -e _ws.col.Info -e _ws.col.Source > info.txt
 	
 	# use the filtered packets to update the database
-	python $PARSE_PY_PATH
+	python ${PARSE_PY_PATH}
 
 	# delete the packets captured in this
 	sudo rm packets.pcap

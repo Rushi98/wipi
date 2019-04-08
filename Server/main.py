@@ -4,7 +4,7 @@ import dataviewhandler
 import sqlite3
 
 PORT = 80
-DB_NAME = '../rpi.db'
+DB_NAME = 'rpi.db'
 INDEX_HTML = "register.html"
 
 connection = sqlite3.connect(DB_NAME)
