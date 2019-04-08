@@ -22,6 +22,8 @@ class DataViewHandler(socketserver.BaseRequestHandler):
 
     scan_pid = -1
 
+    indexPage = ""
+
     def handle(self):
         data = self.request.recv(1024).strip()
         lines = data.splitlines()
@@ -55,6 +57,30 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                 self._start_scan()
             elif url_tokens[0] == 'stopscan':
                 self._stop_scan()
+            elif self.mapping:
+                get_values = {}
+                url_tokens = url.split('?')[1:]
+                if len(url_tokens) > 0:
+                    get_tokens = url_tokens[0]
+                    get_tokens = get_tokens.split('&')
+                    for token in get_tokens:
+                        s = token.split('=')
+                        key = s[0]
+                        value = s[1]
+                        get_values[key] = value
+                student_id = get_values.get("student_id", None)
+                student_name = get_values.get("student_name", None)
+                if student_id is not None and student_name is not None:
+                    info = {
+                        "studentId": student_id,
+                        "studentName": student_name,
+                        "ip": self.client_address[0]
+                    }
+                    self._save_info(info)
+                    response = "Success"
+                else:
+                    response = self.indexPage
+
             else:
                 print("unknown path, ignoring request {}", data)
                 return
@@ -139,3 +165,6 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             self.scanning = False
             self.scan_pid = -1
             print("Scanning stopped")
+
+    def _save_info(self):
+        pass
