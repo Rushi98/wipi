@@ -132,10 +132,12 @@ class DataViewHandler(socketserver.BaseRequestHandler):
 
     def _start_map(self):
         self.mapping = True
+        print("Mapping started")
         pass
 
     def _stop_map(self):
         self.mapping = False
+        print("Mapping stopped")
         pass
 
     def _start_scan(self):
