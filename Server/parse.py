@@ -2,7 +2,7 @@
 
 import sqlite3
 
-DB_NAME = "rpi.db"
+DB_NAME = "/home/alarm/wipi-master/Server/rpi.db"
 search_query = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
 insert_ip_mac_query = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"

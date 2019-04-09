@@ -8,11 +8,12 @@ import sqlite3
 import subprocess
 
 PORT = 80
-DB_NAME = 'rpi.db'
-INDEX_HTML = "register.html"
-SCANNING_EXEC = "executor.sh"
+DB_NAME = '/home/alarm/wipi-master/Server/rpi.db'
+INDEX_HTML = "/home/alarm/wipi-master/Server/register.html"
+SCANNING_EXEC = "/home/alarm/wipi-master/Server/executor.sh"
 
-cursor = None
+connection = sqlite3.connect(DB_NAME)
+cursor = connection.cursor()
 
 mapping = False
 
@@ -25,8 +26,7 @@ scan_pid = -1
 indexPage = ""
 
 if __name__ == "__main__":
-    connection = sqlite3.connect(DB_NAME)
-    cursor = connection.cursor()
+
     requestHandler = dataviewhandler.DataViewHandler
     requestHandler.cursor = cursor
     index_page = open(INDEX_HTML, "r")

@@ -9,14 +9,14 @@ root_pwd="alarm"
 
 session_start=`date "+%Y-%m-%d %H:%M:%S"`
 echo ${session_start} > session_start_time.txt
-PARSE_PY_PATH=/home/alarm/wipi-master/parse.py
+PARSE_PY_PATH=/home/alarm/wipi-master/Server/parse.py
 WIRELESS_INTERFACE=wlan0
 SELF_IP=192.168.12.1
 
-for i in {1..50} 
+for i in {1..50}
 do
 	# wlo1 is the wireless interface which captures the packets
-	echo $root_pwd | sudo -S tcpdump -i $WIRELESS_INTERFACE -w packets.pcap &
+	echo ${root_pwd} | sudo -S tcpdump -i ${WIRELESS_INTERFACE} -w packets.pcap &
 	echo "starting capture #$i"
 
 	# scan for 60 seconds
@@ -26,7 +26,7 @@ do
 
 	# stop the current capture
 	pid=$!
-	sudo kill -2 $pid
+	sudo kill -2 ${pid}
 
 	# analyze the captured packets using tshark
 	#tshark -r packets.pcap -Y "arp.opcode==2 && arp contains b8:27:eb:76:35:d6 && arp.src.proto_ipv4!=$SELF_IP"\
