@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+PACKAGE_NAME=wipi
+/usr/bin/python /usr/lib/wipi/main.py
+# /bin/python /home/alarm/wipi-master/Server/main.py
