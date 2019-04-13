@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
-PACKAGE_NAME=wipi
-/usr/bin/python /usr/lib/wipi/main.py
-# /bin/python /home/alarm/wipi-master/Server/main.py
+WIPI_PACKAGE_NAME=wipi
+WIPI_LIB_DIR="/usr/lib/${WIPI_PACKAGE_NAME}"
+
+export WIPI_PACKAGE_NAME WIPI_LIB_DIR
+
+${WIPI_LIB_DIR}/main.py
