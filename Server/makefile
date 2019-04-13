@@ -12,7 +12,7 @@ install: main.py dataviewhandler.py executor.sh parse.py register.html wipi rpi.
 	install -m755 parse.py $(LIB_DEST_DIR)
 	install -m755 register.html $(LIB_DEST_DIR)
 	install -m755 wipi $(EXEC_DIR)
-	install -m644 wipi.service $(SYSTEMD_UNIT_DIR)/wipi.service
+	install -m644 wipi.service $(SYSTEMD_UNIT_DIR)
 	systemctl enable wipi.service
 
 .PHONY: uninstall
