@@ -2,8 +2,7 @@
 Description="WiPi Server"
 
 [Service]
-# ExecStart=/bin/python /home/alarm/wipi-master/Server/main.py
-ExecStart=/bin/wipi
+ExecStart=/usr/bin/wipi
 
 [Install]
 WantedBy=multi-user.target
