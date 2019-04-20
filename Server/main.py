@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 import socketserver
 from signal import SIGKILL
 from typing import Type
