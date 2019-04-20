@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 # parses through the info.txt file, extracts (session, mac address, hits) and updates the sqlite database
 
 from typing import List, Dict, TextIO, Tuple
