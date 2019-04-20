@@ -1,7 +1,7 @@
 package_name := wipi
 LIB_DEST_DIR := /usr/lib/$(package_name)
 EXEC_DIR := /usr/bin
-SYSTEMD_UNIT_DIR := /usr/lib/systemd/systemd
+SYSTEMD_UNIT_DIR := /usr/lib/systemd/system
 
 .PHONY: install
 install: main.py dataviewhandler.py executor.sh parse.py register.html wipi rpi.db wipi.service
