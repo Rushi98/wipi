@@ -8,7 +8,6 @@ import os
 import sqlite3
 import subprocess
 
-from dataviewhandler import DataViewHandler
 
 if 'WIPI_LIB_DIR' not in os.environ:
     print("Program files not found. exiting.")
@@ -37,6 +36,7 @@ scan_pid: int = -1
 indexPage: str = open(INDEX_HTML, "r").read()
 
 if __name__ == "__main__":
+    from dataviewhandler import DataViewHandler
     requestHandler: Type[DataViewHandler] = dataviewhandler.DataViewHandler
     with socketserver.TCPServer(("", PORT), requestHandler) as httpd:
         try:
