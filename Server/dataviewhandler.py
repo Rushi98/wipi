@@ -8,14 +8,15 @@ import json
 def response_ok_header(content_len: int) -> str:
     return "HTTP/1.1 200 OK\n" \
            "Content-Type: text/json\n" \
-           "Content-Length: {0}" \
+           "Content-Length: {0}\n" \
            "\n" \
         .format(content_len)
 
 
 RESPONSE_BAD: str = "HTTP/1.1 400 Bad Request\n" \
                     "Content-Type: text\n" \
-                    "Content-Length: 0"
+                    "Content-Length: 0\n" \
+                    "\n"
 
 
 def _get_people() -> List[Dict[str, object]]:
@@ -104,6 +105,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
     def handle(self):
         data: bytearray = self.request.recv(1024).strip()
         lines: List[bytearray] = data.splitlines()
+        print(str(lines))
         first_line: bytearray = lines[0]
         first_line_tokens: List[str] = first_line.decode().split(' ')
         verb = first_line_tokens[0]
