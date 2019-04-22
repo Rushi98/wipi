@@ -5,6 +5,19 @@ from main import indexPage, cursor, mapping, start_scan, stop_scan
 import json
 
 
+def response_ok_header(content_len: int) -> str:
+    return "HTTP/1.1 200 OK\n" \
+           "Content-Type: text/json\n" \
+           "Content-Length: {0}" \
+           "\n" \
+        .format(content_len)
+
+
+RESPONSE_BAD: str = "HTTP/1.1 400 Bad Request\n" \
+                    "Content-Type: text\n" \
+                    "Content-Length: 0"
+
+
 def _get_people() -> List[Dict[str, object]]:
     query = """select bits_id, name, mac_address from STUDENT_INFO order by bits_id;"""
     res: List[Dict[str, object]] = []
@@ -101,7 +114,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             print(url)
             url_tokens: List[str] = url.split('/')[1:]
             print(url_tokens)
-            response: str = ""
+            response: Any = None
             if url_tokens[0] == 'sessions':
                 if len(url_tokens) == 1:
                     response = json.dumps(_get_sessions())
@@ -150,7 +163,12 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         else:
             print("unknown verb, ignoring request {}", data)
             return
-        self.request.sendall(str(response).encode())
+        if response is None:
+            self.request.sendall(RESPONSE_BAD)
+        else:
+            response = "{0}\n".format(str(response))
+            response = "{0}{1}".format(response_ok_header(len(response)), str(response))
+            self.request.sendall(response.encode())
 
     def _handle_get(self, first_line_tokens: List[str]):
         pass
