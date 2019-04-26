@@ -25,7 +25,7 @@ PORT: int = 80  # TODO: use port passed by argument
 connection: sqlite3.Connection = sqlite3.connect(DB_NAME)
 cursor: sqlite3.Cursor = connection.cursor()
 
-mapping: bool = False
+mapping: bool = True
 
 map_pid: int = -1
 
