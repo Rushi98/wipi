@@ -5,12 +5,12 @@ from main import indexPage, cursor, mapping, start_scan, stop_scan
 import json
 
 
-def response_ok_header(content_len: int) -> str:
+def response_ok_header(content_len: int, content_type: str = "text/json") -> str:
     return "HTTP/1.1 200 OK\n" \
-           "Content-Type: text/json\n" \
+           "Content-Type: {1}\n" \
            "Content-Length: {0}\n" \
            "\n" \
-        .format(content_len)
+        .format(content_len, content_type)
 
 
 RESPONSE_BAD: str = "HTTP/1.1 400 Bad Request\n" \
@@ -162,6 +162,11 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                     response = "Success"
                 else:
                     response = indexPage
+                response = "{0}\n".format(str(response))
+                response = "{0}{1}".format(response_ok_header(content_len=len(response), content_type="text/html"),
+                                           str(response))
+                self.request.sendall(response.encode())
+                return
             else:
                 print("unknown path, ignoring request {}", data)
                 return
