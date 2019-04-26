@@ -33,8 +33,6 @@ scanning: bool = False
 
 scan_pid: int = -1
 
-indexPage: str = open(INDEX_HTML, "r").read()
-
 if __name__ == "__main__":
     from dataviewhandler import DataViewHandler
     requestHandler: Type[DataViewHandler] = dataviewhandler.DataViewHandler

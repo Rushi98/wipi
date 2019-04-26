@@ -1,8 +1,13 @@
+import os
 import socketserver
 from typing import List, Dict, Any
 from urllib.parse import unquote
-from main import indexPage, cursor, mapping, start_scan, stop_scan
+from main import cursor, mapping, start_scan, stop_scan
 import json
+
+LIB_DIR: str = os.environ['WIPI_LIB_DIR']  # exported by `wipi`
+INDEX_HTML: str = f'{LIB_DIR}/register.html'
+indexPage: str = open(INDEX_HTML, "r").read()
 
 
 def response_ok_header(content_len: int, content_type: str = "text/json") -> str:
