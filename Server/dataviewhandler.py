@@ -51,13 +51,15 @@ def _save_info(info: Dict[str, object]) -> None:
 
 
 def _get_person_attendance(mac: str) -> List[Dict[str, Any]]:
-    query = """select session, hits from ATTENDANCE_DATA where mac_address==?;"""
+    query = """select session, hits, mac_address from ATTENDANCE_DATA where mac_address==?;"""
     res: List[Dict[str, Any]] = []
     try:
         cursor.execute(query, (mac,))
         for row in cursor.fetchall():
             r = {'session': row[0],
-                 'hits': row[1]}
+                 'hits': row[1],
+                 'mac_address': row[2]
+                 }
             res.append(r)
     except Exception as e:
         raise e
@@ -66,7 +68,7 @@ def _get_person_attendance(mac: str) -> List[Dict[str, Any]]:
 
 
 def _get_session_attendance(datetime: str) -> List[Dict[str, Any]]:
-    query = """select session, bits_id, name, hits from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
+    query = """select session, bits_id, name, hits, mac_address from (select * from ATTENDANCE_DATA AD, STUDENT_INFO SI where 
                 AD.session==? and AD.mac_address==SI.mac_address) as t1 order by bits_id;"""
     res: List[Dict[str, Any]] = []
     try:
@@ -75,7 +77,8 @@ def _get_session_attendance(datetime: str) -> List[Dict[str, Any]]:
             r = {'session': str(row[0]),
                  'bits_id': str(row[1]),
                  'name': str(row[2]),
-                 'hits': row[3]
+                 'hits': row[3],
+                 'mac_address': row[4]
                  }
             res.append(r)
     except Exception as e:
