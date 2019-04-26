@@ -5,7 +5,6 @@ from typing import Type
 
 import dataviewhandler
 import os
-import sqlite3
 import subprocess
 
 
@@ -18,14 +17,8 @@ LIB_DIR: str = os.environ['WIPI_LIB_DIR']  # exported by `wipi`
 DB_NAME: str = f'{LIB_DIR}/rpi.db'
 INDEX_HTML: str = f'{LIB_DIR}/register.html'
 SCANNING_EXEC: str = f'{LIB_DIR}/executor.sh'
-SESSION_FILE: str = f'{LIB_DIR}/session_start_time.txt'
 
 PORT: int = 80  # TODO: use port passed by argument
-
-connection: sqlite3.Connection = sqlite3.connect(DB_NAME)
-cursor: sqlite3.Cursor = connection.cursor()
-
-mapping: bool = True
 
 map_pid: int = -1
 

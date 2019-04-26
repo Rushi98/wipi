@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 # parses through the info.txt file, extracts (session, mac address, hits) and updates the sqlite database
+import os
+import sqlite3
+from typing import List, TextIO, Tuple
 
-from typing import List, Dict, TextIO, Tuple
+LIB_DIR: str = os.environ['WIPI_LIB_DIR']  # exported by `wipi`
 
-from main import SESSION_FILE, cursor, connection
+DB_NAME: str = f'{LIB_DIR}/rpi.db'
+connection: sqlite3.Connection = sqlite3.connect(DB_NAME)
+cursor: sqlite3.Cursor = connection.cursor()
+
+SESSION_FILE: str = f'{LIB_DIR}/session_start_time.txt'
+
 
 search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"

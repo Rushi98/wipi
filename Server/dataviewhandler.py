@@ -1,13 +1,19 @@
 import os
 import socketserver
+import sqlite3
 from typing import List, Dict, Any
 from urllib.parse import unquote
-from main import cursor, mapping, start_scan, stop_scan
+from main import start_scan, stop_scan
 import json
 
 LIB_DIR: str = os.environ['WIPI_LIB_DIR']  # exported by `wipi`
 INDEX_HTML: str = f'{LIB_DIR}/register.html'
 indexPage: str = open(INDEX_HTML, "r").read()
+
+DB_NAME: str = f'{LIB_DIR}/rpi.db'
+connection: sqlite3.Connection = sqlite3.connect(DB_NAME)
+cursor: sqlite3.Cursor = connection.cursor()
+mapping: bool = True
 
 
 def response_ok_header(content_len: int, content_type: str = "text/json") -> str:
@@ -138,12 +144,16 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                 response = json.dumps(_get_person_attendance(mac))
             elif url_tokens[0] == 'startmap':
                 self._start_map()
+                response = "Success"
             elif url_tokens[0] == 'stopmap':
                 self._stop_map()
+                response = "Success"
             elif url_tokens[0] == 'startscan':
                 start_scan()
+                response = "Success"
             elif url_tokens[0] == 'stopscan':
                 stop_scan()
+                response = "Success"
             elif mapping:
                 get_values = {}
                 url_tokens = url.split('?')[1:]
@@ -184,9 +194,6 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             response = "{0}\n".format(str(response))
             response = "{0}{1}".format(response_ok_header(len(response)), str(response))
             self.request.sendall(response.encode())
-
-    def _handle_get(self, first_line_tokens: List[str]):
-        pass
 
     def _start_map(self):
         self.mapping = True
