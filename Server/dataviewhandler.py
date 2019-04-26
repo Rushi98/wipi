@@ -174,7 +174,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
             print("unknown verb, ignoring request {}", data)
             return
         if response is None:
-            self.request.sendall(RESPONSE_BAD)
+            self.request.sendall(RESPONSE_BAD.encode())
         else:
             response = "{0}\n".format(str(response))
             response = "{0}{1}".format(response_ok_header(len(response)), str(response))
