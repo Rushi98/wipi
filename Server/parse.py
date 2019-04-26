@@ -8,6 +8,7 @@ from main import SESSION_FILE, cursor, connection
 search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
 insert_ip_mac_query: str = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"
+insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (name) VALUES (?)"
 update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==?"
 
 # get start time of the session
@@ -17,20 +18,20 @@ if start_time[len(start_time) - 1] == "\n":
     start_time = start_time[:len(start_time) - 1]
 
 # get month number from month name
-monthNumber: Dict[str, str] = {
-    "Jan": "01",
-    "Feb": "02",
-    "Mar": "03",
-    "Apr": "04",
-    "May": "05",
-    "Jun": "06",
-    "Jul": "07",
-    "Aug": "08",
-    "Sep": "09",
-    "Oct": "10",
-    "Nov": "11",
-    "Dec": "12"
-}
+# monthNumber: Dict[str, str] = {
+#     "Jan": "01",
+#     "Feb": "02",
+#     "Mar": "03",
+#     "Apr": "04",
+#     "May": "05",
+#     "Jun": "06",
+#     "Jul": "07",
+#     "Aug": "08",
+#     "Sep": "09",
+#     "Oct": "10",
+#     "Nov": "11",
+#     "Dec": "12"
+# }
 
 if __name__ == '__main__':
 
@@ -83,6 +84,8 @@ if __name__ == '__main__':
         # val = (ts, var[5], var[8], device_manufacturer)
 
         attendance_val: Tuple[bytearray, bytearray, str] = (start_time, var[8], "1")
-
         cursor.execute(insert_attendance_query, attendance_val)
+        connection.commit()
+
+        cursor.execute(insert_student_info, (var[8],))
         connection.commit()
