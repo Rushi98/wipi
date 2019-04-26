@@ -39,7 +39,7 @@ echo "wireless interface is ${WIRELESS_INTERFACE}"
 SELF_IP=`get_w_ip`
 echo "ip address for wireless interface is ${SELF_IP}"
 
-for i in {1..${SCAN_DURATION}}
+for i in $(seq 1 ${SCAN_DURATION})
 do
 	tcpdump -i ${WIRELESS_INTERFACE} -w packets.pcap &
 	echo "starting capture #$i"
@@ -51,6 +51,7 @@ do
 
 	# stop the current capture
 	pid=$!
+	echo "killing ${pid}"
 	kill -2 ${pid}
 
 	# analyze the captured packets using tshark
