@@ -58,7 +58,7 @@ def _get_person_attendance(mac: str) -> List[Dict[str, Any]]:
         for row in cursor.fetchall():
             r = {'session': row[0],
                  'hits': row[1],
-                 'mac_address': row[2]
+                 'mac_address': str(row[2])
                  }
             res.append(r)
     except Exception as e:
@@ -78,7 +78,7 @@ def _get_session_attendance(datetime: str) -> List[Dict[str, Any]]:
                  'bits_id': str(row[1]),
                  'name': str(row[2]),
                  'hits': row[3],
-                 'mac_address': row[4]
+                 'mac_address': str(row[4])
                  }
             res.append(r)
     except Exception as e:
