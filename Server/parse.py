@@ -9,7 +9,7 @@ search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
 insert_ip_mac_query: str = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"
 insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (name) VALUES (?)"
-update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==?"
+update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==? AND session==?"
 
 # get start time of the session
 sess_file: List[bytearray] = list(open(SESSION_FILE, "r"))
@@ -53,7 +53,7 @@ if __name__ == '__main__':
         var: List[bytearray] = line.split()
         # print tuple(var[8])
         if var[8] in macs:
-            cursor.execute(update_query, (var[8],))
+            cursor.execute(update_query, (var[8], start_time))
             connection.commit()
             continue
 
