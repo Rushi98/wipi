@@ -8,7 +8,7 @@ from main import SESSION_FILE, cursor, connection
 search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
 insert_ip_mac_query: str = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"
-insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (name) VALUES (?)"
+insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (mac_address, device_make) VALUES (?, ?)"
 update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==? AND session==?"
 
 # get start time of the session
@@ -87,5 +87,6 @@ if __name__ == '__main__':
         cursor.execute(insert_attendance_query, attendance_val)
         connection.commit()
 
-        cursor.execute(insert_student_info, (var[8],))
+        device = (var[9].split('_'))[0]
+        cursor.execute(insert_student_info, (var[8], device))
         connection.commit()
