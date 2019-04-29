@@ -4,6 +4,7 @@ import sqlite3
 from typing import List, Dict, Any
 from urllib.parse import unquote
 from main import start_scan, stop_scan
+import register
 import json
 
 LIB_DIR: str = os.environ['WIPI_LIB_DIR']  # exported by `wipi`
@@ -44,21 +45,6 @@ def _get_people() -> List[Dict[str, object]]:
         raise e
     else:
         return res
-
-
-def _save_info(info: Dict[str, object]) -> None:
-    query = """INSERT OR IGNORE 
-    INTO STUDENT_INFO 
-    VALUES (
-        (SELECT mac_address 
-            from IP_MAC 
-            WHERE ip_address==?), ?, ?
-    );"""
-    val = (info["ip"], info["studentName"], info["studentId"])
-    try:
-        cursor.execute(query, val)
-    except Exception as e:
-        raise e
 
 
 def _get_person_attendance(mac: str) -> List[Dict[str, Any]]:
@@ -173,7 +159,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                         "studentName": student_name,
                         "ip": self.client_address[0]
                     }
-                    _save_info(info)
+                    register.save_student_info(info)
                     response = "Success"
                 else:
                     response = indexPage

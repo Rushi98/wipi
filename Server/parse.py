@@ -15,7 +15,6 @@ SESSION_FILE: str = f'{LIB_DIR}/session_start_time.txt'
 
 search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
-insert_ip_mac_query: str = "INSERT OR IGNORE INTO IP_MAC VALUES (?, ?)"
 insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (mac_address, device_make) VALUES (?, ?)"
 update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==? AND session==?"
 
@@ -67,9 +66,6 @@ if __name__ == '__main__':
 
         macs[var[8]] = 1
 
-        # add the ip_mac entry to database
-        ip_mac_val: Tuple[bytearray, bytearray] = (var[5], var[8])
-        cursor.execute(insert_ip_mac_query, ip_mac_val)
         connection.commit()
 
         # get date and time in sql compatible format
