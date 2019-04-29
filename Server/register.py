@@ -27,6 +27,7 @@ def save_student_info(info: Dict[str, str]) -> None:
 
     query = """INSERT OR REPLACE 
     INTO STUDENT_INFO 
+    (mac_address, name, bits_id)
     VALUES (
         ?, ?, ?
     );"""
