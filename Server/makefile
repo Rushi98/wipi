@@ -11,7 +11,7 @@ install: main.py dataviewhandler.py executor.sh parse.py register.py register.ht
 	install -m644 rpi.db $(LIB_DEST_DIR)
 	install -m755 executor.sh $(LIB_DEST_DIR)
 	install -m755 parse.py $(LIB_DEST_DIR)
-	install -m755 mapper.py $(LIB_DEST_DIR)
+	install -m755 register.py $(LIB_DEST_DIR)
 	install -m755 register.html $(LIB_DEST_DIR)
 	install -m755 wipi $(EXEC_DIR)
 	install -m644 wipi.service $(SYSTEMD_UNIT_DIR)
@@ -25,7 +25,7 @@ uninstall:
 	rm $(LIB_DEST_DIR)/rpi.db
 	rm $(LIB_DEST_DIR)/executor.sh
 	rm $(LIB_DEST_DIR)/parse.py
-	rm $(LIB_DEST_DIR)/mapper.py
+	rm $(LIB_DEST_DIR)/register.py
 	rm $(LIB_DEST_DIR)/register.html
 	rm -rf $(LIB_DEST_DIR)/__pycache__
 	rmdir $(LIB_DEST_DIR)
