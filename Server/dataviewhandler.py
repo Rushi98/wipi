@@ -32,14 +32,16 @@ RESPONSE_BAD: str = "HTTP/1.1 400 Bad Request\n" \
 
 
 def _get_people() -> List[Dict[str, object]]:
-    query = """select bits_id, name, mac_address from STUDENT_INFO order by bits_id;"""
+    query = """select bits_id, name, mac_address, device_make from STUDENT_INFO order by bits_id;"""
     res: List[Dict[str, object]] = []
     try:
         cursor.execute(query)
         for row in cursor.fetchall():
             r = {'bits_id': row[0],
                  'name': row[1],
-                 'mac_address': str(row[2])}
+                 'mac_address': str(row[2]),
+                 'device_make': str(row[3])
+                 }
             res.append(r)
     except Exception as e:
         raise e

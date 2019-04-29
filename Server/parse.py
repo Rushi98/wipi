@@ -13,7 +13,7 @@ cursor: sqlite3.Cursor = connection.cursor()
 SESSION_FILE: str = f'{LIB_DIR}/session_start_time.txt'
 
 
-search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA"
+search_query: str = "SELECT DISTINCT mac_address FROM ATTENDANCE_DATA WHERE session==?"
 insert_attendance_query: str = "INSERT OR IGNORE INTO ATTENDANCE_DATA (session, mac_address, hits) VALUES (?, ?, ?)"
 insert_student_info: str = "INSERT OR IGNORE INTO STUDENT_INFO (mac_address, device_make) VALUES (?, ?)"
 update_query: str = "UPDATE ATTENDANCE_DATA SET hits = hits+1 WHERE mac_address==? AND session==?"
@@ -42,7 +42,7 @@ if start_time[len(start_time) - 1] == "\n":
 
 if __name__ == '__main__':
 
-    cursor.execute(search_query)
+    cursor.execute(search_query, (start_time,))
     # connection.commit()
 
     rows = cursor.fetchall()
