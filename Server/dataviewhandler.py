@@ -2,7 +2,7 @@ import os
 import socketserver
 import sqlite3
 from typing import List, Dict, Any
-from urllib.parse import unquote
+from urllib.parse import unquote_plus
 from main import start_scan, stop_scan
 import register
 import json
@@ -113,12 +113,12 @@ class DataViewHandler(socketserver.BaseRequestHandler):
         verb = first_line_tokens[0]
         if verb == 'GET':
             url: str = first_line_tokens[1]
-            url = url.lower()
-            url = unquote(url)
+            url = unquote_plus(url)
             print(url)
             url_tokens: List[str] = url.split('/')[1:]
             print(url_tokens)
             response: Any = None
+            url_tokens[0] = url_tokens[0].lower()
             if url_tokens[0] == 'sessions':
                 if len(url_tokens) == 1:
                     response = json.dumps(_get_sessions())
@@ -150,7 +150,7 @@ class DataViewHandler(socketserver.BaseRequestHandler):
                     get_tokens = get_tokens.split('&')
                     for token in get_tokens:
                         s = token.split('=')
-                        key = s[0]
+                        key = s[0].lower()
                         value = s[1]
                         get_values[key] = value
                 student_id = get_values.get("student_id", None)
